@@ -368,11 +368,11 @@ pub fn Host(
             s.prev_share_screen = share_screen;
             if share_screen {
                 s.screen.set_enabled(true);
-                let state_clone = state.clone();
-                Timeout::new(1000, move || {
-                    state_clone.borrow_mut().screen.start();
-                })
-                .forget();
+                // No timeout here — getDisplayMedia must be called within the
+                // browser's transient activation window (user gesture context).
+                // A timeout would lose the activation and cause
+                // "getDisplayMedia must be called from a user gesture handler".
+                s.screen.start();
             } else {
                 s.screen.set_enabled(false);
                 s.screen.stop();

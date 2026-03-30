@@ -41,20 +41,20 @@ pub fn MeetingSettingsPage(id: String) -> Element {
 
     // Auth check
     use_effect(move || {
-        if oauth_enabled().unwrap_or(false) {
-            wasm_bindgen_futures::spawn_local(async move {
-                match check_session().await {
-                    Ok(_) => auth_checked.set(true),
-                    Err(_) => {
-                        if let Some(win) = window() {
+        wasm_bindgen_futures::spawn_local(async move {
+            match check_session().await {
+                Ok(_) => auth_checked.set(true),
+                Err(_) => {
+                    if let Some(win) = window() {
+                        if oauth_enabled().unwrap_or(false) {
                             let _ = win.location().set_href("/login");
+                        } else {
+                            let _ = win.location().set_href("/login/local");
                         }
                     }
                 }
-            });
-        } else {
-            auth_checked.set(true);
-        }
+            }
+        });
     });
 
     // Fetch meeting info once auth is confirmed

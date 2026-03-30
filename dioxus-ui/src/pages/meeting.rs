@@ -79,17 +79,14 @@ pub fn MeetingPage(id: String) -> Element {
 
     // Auth check effect
     use_effect(move || {
-        if oauth_enabled().unwrap_or(false) {
-            wasm_bindgen_futures::spawn_local(async move {
-                match check_session().await {
-                    Ok(_) => auth_checked.set(true),
-                    Err(_) => {
+        wasm_bindgen_futures::spawn_local(async move {
+            match check_session().await {
+                Ok(_) => auth_checked.set(true),
+                Err(_) => {
+                    if oauth_enabled().unwrap_or(false) {
+                        // OAuth mode: redirect to OAuth login with return URL
                         if let Some(win) = window() {
                             if let Ok(current_url) = win.location().href() {
-                                // Store the return URL in sessionStorage before
-                                // navigating to /login. Dioxus 0.7's router strips
-                                // unrecognized query params via history.replaceState,
-                                // so we cannot rely on ?returnTo= surviving in the URL.
                                 match win.session_storage() {
                                     Ok(Some(storage)) => {
                                         if storage
@@ -106,12 +103,15 @@ pub fn MeetingPage(id: String) -> Element {
                                 let _ = win.location().set_href("/login");
                             }
                         }
+                    } else {
+                        // Local auth mode: redirect to local login
+                        if let Some(win) = window() {
+                            let _ = win.location().set_href("/login/local");
+                        }
                     }
                 }
-            });
-        } else {
-            auth_checked.set(true);
-        }
+            }
+        });
     });
 
     // Fetch user profile
@@ -293,7 +293,11 @@ pub fn MeetingPage(id: String) -> Element {
         let navigator = navigator;
         wasm_bindgen_futures::spawn_local(async move {
             let _ = logout().await;
-            navigator.push(Route::Login {});
+            if oauth_enabled().unwrap_or(false) {
+                navigator.push(Route::Login {});
+            } else {
+                navigator.push(Route::LoginLocal {});
+            }
         });
     };
 
