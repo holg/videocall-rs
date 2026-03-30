@@ -41,7 +41,7 @@ use crate::token;
 // ---------------------------------------------------------------------------
 
 /// Build a `Set-Cookie` header value for the session JWT.
-fn build_session_cookie(
+pub(crate) fn build_session_cookie(
     name: &str,
     jwt: &str,
     ttl_secs: i64,

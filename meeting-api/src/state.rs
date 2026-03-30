@@ -49,6 +49,8 @@ pub struct AppState {
     pub service_version_urls: Vec<String>,
     /// Shared HTTP client for outbound requests (e.g. version fan-out).
     pub http_client: reqwest::Client,
+    /// Admin secret for local user management. `None` disables admin endpoints.
+    pub admin_secret: Option<String>,
 }
 
 impl AppState {
@@ -75,6 +77,7 @@ impl AppState {
                 .timeout(std::time::Duration::from_secs(3))
                 .build()
                 .expect("failed to build reqwest client"),
+            admin_secret: config.admin_secret.clone(),
         }
     }
 }

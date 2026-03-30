@@ -90,6 +90,21 @@ pub struct OAuthRequestRow {
     pub nonce: Option<String>,
 }
 
+/// Row returned from the `local_users` table.
+#[derive(Debug, sqlx::FromRow)]
+#[allow(dead_code)]
+pub struct LocalUserRow {
+    pub id: String,
+    pub email: String,
+    pub name: String,
+    pub password_hash: Option<String>,
+    pub invite_token: String,
+    pub invite_expires_at: DateTime<Utc>,
+    pub activated_at: Option<DateTime<Utc>>,
+    pub created_at: DateTime<Utc>,
+    pub last_login: Option<DateTime<Utc>>,
+}
+
 // ---- Conversions to API response types -------------------------------------
 
 impl ParticipantRow {

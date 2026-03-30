@@ -5,7 +5,9 @@
 use dioxus::prelude::*;
 
 use crate::components::login::Login;
+use crate::pages::activate::Activate;
 use crate::pages::home::Home;
+use crate::pages::login_local::LoginLocal;
 use crate::pages::meeting::MeetingPage;
 use crate::pages::meeting_settings::MeetingSettingsPage;
 
@@ -15,6 +17,10 @@ pub enum Route {
     Home {},
     #[route("/login")]
     Login {},
+    #[route("/login/local")]
+    LoginLocal {},
+    #[route("/activate/:token")]
+    Activate { token: String },
     #[route("/meeting/:id/settings")]
     MeetingSettings { id: String },
     #[route("/meeting/:id", MeetingPage)]

@@ -1,0 +1,24 @@
+# Deploy configuration for videocall-rs
+# Copy to deploy-config.toml and fill in your values.
+# deploy-config.toml is gitignored.
+
+[server]
+ssh_host = "example.com"
+server_name = "videocall.example.com"
+remote_base = "/var/www/videocall.example.com"
+app_name = "meeting-api"
+site_url = "https://videocall.example.com"
+
+[build]
+target_triple = "x86_64-unknown-linux-gnu"
+rust_toolchain = "stable"
+wasm_opt_version = "version_123"
+
+[service]
+# These are written to .env on the server during setup (only if .env doesn't exist yet)
+listen_addr = "127.0.0.1:8089"
+database_url = "sqlite:./data/meetings.db"
+cookie_secure = "true"
+rust_log = "info"
+ws_port = "8080"
+# jwt_secret and admin_secret are generated during setup if not provided

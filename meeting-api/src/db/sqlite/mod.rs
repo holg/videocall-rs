@@ -13,6 +13,7 @@
 
 //! SQLite database backend.
 
+pub mod local_auth;
 pub mod meetings;
 pub mod oauth;
 pub mod participants;

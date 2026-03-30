@@ -13,6 +13,7 @@
 
 //! Axum router configuration for the Meeting Backend API.
 
+pub mod local_auth;
 pub mod meetings;
 pub mod oauth;
 pub mod participants;
@@ -97,6 +98,10 @@ pub fn router() -> Router<AppState> {
         .route("/session", get(oauth::check_session))
         .route("/profile", get(oauth::get_profile))
         .route("/logout", get(oauth::logout))
+        // Local auth (invite-based email/password)
+        .route("/admin/users", post(local_auth::create_invite))
+        .route("/auth/activate", post(local_auth::activate))
+        .route("/auth/login", post(local_auth::login))
         // Meeting CRUD
         .route("/api/v1/meetings", get(meetings::list_meetings))
         .route("/api/v1/meetings", post(meetings::create_meeting))

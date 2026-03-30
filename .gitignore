@@ -4,6 +4,9 @@
 .mov
 .mp4
 .env
+scripts/deploy-config.toml
+scripts/generated-nginx-*.conf
+data/
 #for jet brains products
 .idea/
 target/

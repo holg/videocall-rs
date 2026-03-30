@@ -72,6 +72,7 @@ pub fn build_app(pool: DbPool) -> Router {
         cookie_secure: false,
         nats: None,
         service_version_urls: Vec::new(),
+        admin_secret: None,
         http_client: reqwest::Client::new(),
     };
     routes::router().with_state(state)

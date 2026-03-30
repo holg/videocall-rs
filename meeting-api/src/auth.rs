@@ -146,6 +146,7 @@ mod tests {
             nats: None,
             service_version_urls: Vec::new(),
             http_client: reqwest::Client::new(),
+            admin_secret: None,
         }
     }
 

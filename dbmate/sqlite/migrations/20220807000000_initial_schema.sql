@@ -84,10 +84,27 @@ BEGIN
     UPDATE meeting_participants SET updated_at = datetime('now') WHERE id = NEW.id;
 END;
 
+-- Local user accounts (invite-based email/password auth)
+CREATE TABLE IF NOT EXISTS local_users (
+    id TEXT PRIMARY KEY,
+    email TEXT NOT NULL UNIQUE,
+    name TEXT NOT NULL DEFAULT '',
+    password_hash TEXT,
+    invite_token TEXT NOT NULL UNIQUE,
+    invite_expires_at TEXT NOT NULL,
+    activated_at TEXT,
+    created_at TEXT NOT NULL DEFAULT (datetime('now')),
+    last_login TEXT
+);
+
+CREATE INDEX IF NOT EXISTS idx_local_users_email ON local_users(email);
+CREATE INDEX IF NOT EXISTS idx_local_users_invite_token ON local_users(invite_token);
+
 -- migrate:down
 DROP TRIGGER IF EXISTS update_meeting_participants_updated_at;
 DROP TABLE IF EXISTS meeting_participants;
 DROP TRIGGER IF EXISTS update_meetings_updated_at;
 DROP TABLE IF EXISTS meetings;
+DROP TABLE IF EXISTS local_users;
 DROP TABLE IF EXISTS users;
 DROP TABLE IF EXISTS oauth_requests;

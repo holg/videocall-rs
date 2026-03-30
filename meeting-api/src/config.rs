@@ -50,6 +50,9 @@ pub struct Config {
     /// Internal URLs for fetching version info from peer services.
     /// Used by the aggregated `/api/v1/versions` endpoint.
     pub service_version_urls: Vec<String>,
+    /// Admin secret for managing local user accounts.
+    /// When set, enables `POST /admin/users` to create invite-based accounts.
+    pub admin_secret: Option<String>,
 }
 
 /// OAuth/OIDC configuration — provider-agnostic.
@@ -135,6 +138,8 @@ impl Config {
             .map(|s| s.split(',').map(|u| u.trim().to_string()).collect())
             .unwrap_or_default();
 
+        let admin_secret = env::var("ADMIN_SECRET").ok().filter(|s| !s.is_empty());
+
         let oauth = env::var("OAUTH_CLIENT_ID")
             .ok()
             .filter(|s| !s.is_empty())
@@ -219,6 +224,7 @@ impl Config {
             cors_allowed_origin,
             nats_url,
             service_version_urls,
+            admin_secret,
         })
     }
 
