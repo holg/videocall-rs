@@ -348,10 +348,17 @@ impl MicrophoneEncoder {
             let constraints = MediaStreamConstraints::new();
             let media_info = web_sys::MediaTrackConstraints::new();
 
+            // Explicitly enable browser audio processing to prevent echo
+            // and background noise. Not all browsers/platforms enable these
+            // by default, especially on Windows.
+            media_info.set_echo_cancellation(&JsValue::TRUE);
+            media_info.set_noise_suppression(&JsValue::TRUE);
+            media_info.set_auto_gain_control(&JsValue::TRUE);
+
             // Force exact deviceId match (avoids falling back to the default mic).
             if device_id.is_empty() {
                 log::warn!("Microphone device_id is empty, using default constraint");
-                constraints.set_audio(&JsValue::TRUE);
+                constraints.set_audio(&media_info.into());
             } else {
                 let exact = js_sys::Object::new();
                 js_sys::Reflect::set(
